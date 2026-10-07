@@ -173,6 +173,7 @@ function resultView(f) {
 }
 function renderProfile(promptOnly = false) {
   const body = document.getElementById('overlay-body'); if (!body) return;
+  document.getElementById('dialog').classList.toggle('profile-dialog', !promptOnly);
   const m = profile.meal, h = profile.housing;
   const when = x => x.savedAt ? new Date(x.savedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
   const src = x => (x.source === 'manual' ? 'chosen by you' : 'from quiz') + (x.savedAt ? ' · ' + when(x) : '');
