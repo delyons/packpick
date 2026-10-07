@@ -1,0 +1,30 @@
+/* Design tokens: colors, fonts, and the light and dark themes. */
+:root {
+  color-scheme: light;
+  --bg: #F2F3F6;
+  --surface: #FFFFFF;
+  --ink: #16171B;
+  --muted: #5B6070;
+  --line: #D8DBE3;
+  --accent: #C20E1A;
+  --accent-ink: #B00C17;
+  --on-accent: #FFFFFF;
+  --soft: #FBE9EA;
+  --scrim: rgba(22, 23, 27, 0.5);
+  --shadow: rgba(22, 23, 27, 0.25);
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121316; --surface: #1B1C21; --ink: #F0F1F4; --muted: #A2A6B2; --line: #33353D;
+    --accent: #D63A33; --accent-ink: #FF7C72; --on-accent: #FFFFFF; --soft: #2C1C1E; --scrim: rgba(0, 0, 0, 0.66); --shadow: rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121316; --surface: #1B1C21; --ink: #F0F1F4; --muted: #A2A6B2; --line: #33353D;
+  --accent: #D63A33; --accent-ink: #FF7C72; --on-accent: #FFFFFF; --soft: #2C1C1E; --scrim: rgba(0, 0, 0, 0.66); --shadow: rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}

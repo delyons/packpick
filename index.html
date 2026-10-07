@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PackPick</title>
+<meta name="description" content="Short quizzes that match NC State students to a meal plan and a place to live. An unofficial student project.">
+<meta name="theme-color" content="#C20E1A">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/motion.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="bricks" aria-hidden="true"></div>
+  <header>
+    <button class="brand" data-home aria-label="PackPick home">Pack<span>Pick</span></button>
+    <button class="icon-btn" data-profile id="profile-btn" aria-label="My profile" title="My profile" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></button>
+  </header>
+  <main id="app"></main>
+  <footer>
+    PackPick is an unofficial student project and is not run by NC State. Meal plan prices are 2026-27 per-semester rates from
+    <a href="https://dining.ncsu.edu/meal-plans/" target="_blank" rel="noopener">NC State Dining</a>, before NC sales tax.
+    Housing details come from
+    <a href="https://housing.dasa.ncsu.edu/" target="_blank" rel="noopener">University Housing</a>, and housing prices are the 2026-27 projected per-semester rates from its
+    <a href="https://housing.dasa.ncsu.edu/find-a-community/costs/" target="_blank" rel="noopener">costs page</a>, plus the $150 ResNet fee. Confirm everything before you sign up.
+  </footer>
+</div>
+
+<div class="scrim" id="overlay" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="profile-title" id="dialog">
+    <div class="dialog-head">
+      <h2 class="dlg-title" id="profile-title">My profile</h2>
+      <button class="x-btn" id="overlay-close" data-close aria-label="Close profile"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13"/></svg></button>
+    </div>
+    <div id="overlay-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true">
+  <span id="toast-text"></span>
+  <button class="toast-btn" data-profile>View profile</button>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

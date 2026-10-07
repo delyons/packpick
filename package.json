@@ -1,0 +1,12 @@
+{
+  "name": "packpick",
+  "version": "1.0.0",
+  "description": "Unofficial NC State quizzes that match students to a meal plan and housing.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve .",
+    "test": "node --test tests/logic.test.js"
+  },
+  "license": "MIT"
+}

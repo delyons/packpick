@@ -1,0 +1,19 @@
+/* Transitions between screens, the profile overlay and the toast, plus the reduced-motion overrides. */
+@keyframes leave-next { to { opacity: 0; transform: translateX(-16px); } }
+@keyframes leave-prev { to { opacity: 0; transform: translateX(16px); } }
+@keyframes enter-next { from { opacity: 0; transform: translateX(22px); } }
+@keyframes enter-prev { from { opacity: 0; transform: translateX(-22px); } }
+@keyframes fade-in { from { opacity: 0; transform: translateY(-4px); } }
+.leave.go-next { animation: leave-next .15s ease-in both; }
+.leave.go-prev { animation: leave-prev .15s ease-in both; }
+.enter.go-next { animation: enter-next .32s cubic-bezier(.2, .7, .2, 1) both; }
+.enter.go-prev { animation: enter-prev .32s cubic-bezier(.2, .7, .2, 1) both; }
+.scrim { opacity: 0; transition: opacity .2s ease; }
+.scrim.open { opacity: 1; }
+.dialog { transform: translateY(14px) scale(.985); transition: transform .26s cubic-bezier(.2, .7, .2, 1); }
+.scrim.open .dialog { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .pick { transition: none; } .pick:hover { transform: none; }
+  .leave.go-next, .leave.go-prev, .enter.go-next, .enter.go-prev, .hist-body { animation: none; }
+  .scrim, .dialog, .toast { transition: none; }
+}
