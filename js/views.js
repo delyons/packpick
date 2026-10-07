@@ -38,11 +38,11 @@ function hideToast() {
   const t = document.getElementById('toast'); if (!t) return;
   clearTimeout(ui.toastTimer); t.classList.remove('show'); t.setAttribute('aria-hidden', 'true');
 }
-function openProfile(from) {
+function openProfile(from, promptOnly = false) {
   ui.lastFocus = from || null; ui.overlayOpen = true;
   const ov = document.getElementById('overlay');
   ov.hidden = false; document.body.style.overflow = 'hidden';
-  renderProfile();
+  renderProfile(promptOnly);
   if (reduceMotion()) ov.classList.add('open');
   else requestAnimationFrame(() => requestAnimationFrame(() => { if (ui.overlayOpen) ov.classList.add('open'); }));
   document.getElementById('overlay-close').focus();
@@ -171,7 +171,7 @@ function resultView(f) {
       </div>
     </div>`;
 }
-function renderProfile() {
+function renderProfile(promptOnly = false) {
   const body = document.getElementById('overlay-body'); if (!body) return;
   const m = profile.meal, h = profile.housing;
   const when = x => x.savedAt ? new Date(x.savedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
@@ -189,18 +189,18 @@ function renderProfile() {
   const athVal = profile.athlete === true ? 'yes' : profile.athlete === false ? 'no' : '';
   const firstNote = profile.year === 'first' && profile.athlete
     ? 'First-year athletes can pick a Flex plan or an athletic plan. Ask NC State Dining whether an athletic plan can stand in for Flex in your first year.' : '';
-  body.innerHTML = `
-    ${ui.profileNotice ? `<p class="warn" style="margin:0 0 14px">${ui.profileNotice}</p>` : ''}
-    <p class="res-sub" style="margin:0 0 18px">Tell us a bit about you, then keep your picks from the quizzes or choose your own.</p>
-    <div class="pcards">
-      <div class="pcard">
-        <span class="eyebrow">About you</span>
-        <div class="field" style="margin-top:6px"><label for="profile-year">Year</label>
-          <select id="profile-year" data-field="year"><option value="">Choose one</option>${YEARS.map(y => `<option value="${y[0]}"${profile.year === y[0] ? ' selected' : ''}>${y[1]}</option>`).join('')}</select></div>
-        <div class="field"><label for="profile-athlete">Roster athlete</label>
-          <select id="profile-athlete" data-field="athlete"><option value=""${athVal === '' ? ' selected' : ''}>Choose one</option><option value="yes"${athVal === 'yes' ? ' selected' : ''}>Yes</option><option value="no"${athVal === 'no' ? ' selected' : ''}>No</option></select></div>
-        <p class="hint">${known ? 'The meal plans and housing below are limited to what is open to you.' : 'Choose your year and athlete status to see only the plans and housing open to you.'}${firstNote ? ' ' + firstNote : ''}</p>
-      </div>
+  const aboutCard = `
+    <div class="pcard">
+      <span class="eyebrow">About you</span>
+      <div class="field" style="margin-top:6px"><label for="profile-year">Year</label>
+        <select id="profile-year" data-field="year"><option value="">Choose one</option>${YEARS.map(y => `<option value="${y[0]}"${profile.year === y[0] ? ' selected' : ''}>${y[1]}</option>`).join('')}</select></div>
+      <div class="field"><label for="profile-athlete">Roster athlete</label>
+        <select id="profile-athlete" data-field="athlete"><option value=""${athVal === '' ? ' selected' : ''}>Choose one</option><option value="yes"${athVal === 'yes' ? ' selected' : ''}>Yes</option><option value="no"${athVal === 'no' ? ' selected' : ''}>No</option></select></div>
+      <p class="hint">${known ? 'The meal plans and housing below are limited to what is open to you.' : 'Choose your year and athlete status to see only the plans and housing open to you.'}${firstNote ? ' ' + firstNote : ''}</p>
+      ${promptOnly ? '<div class="actions" style="margin-top:16px"><button class="btn" data-close>Continue</button></div>' : ''}
+    </div>`;
+  const selectionCards = !promptOnly ? `
+    <div class="pcards profile-columns">
       <div class="pcard">
         <span class="eyebrow">Meal plan${m ? ' · ' + src(m) : ''}</span>
         <h3>${m ? withTop(m.key, dd) : 'Not chosen yet'}</h3>
@@ -221,8 +221,18 @@ function renderProfile() {
           <select id="manual-housing" data-manual="housing">${options(houseGroups, h && h.key, 'housing', k => H[k].name)}</select></div>
         <div class="actions" style="margin-top:12px"><button class="btn small ghost" data-start="housing">${h ? 'Retake quiz' : 'Take the quiz'}</button>${h ? '<button class="btn small ghost" data-remove="housing">Remove</button>' : ''}</div>
       </div>
+    </div>` : '';
+
+  const title = promptOnly ? 'Tell us about you' : 'My profile';
+  body.innerHTML = `
+    ${ui.profileNotice ? `<p class="warn" style="margin:0 0 14px">${ui.profileNotice}</p>` : ''}
+    ${promptOnly ? '<p class="res-sub" style="margin:0 0 18px">Choose your year and athlete status so we can match the right plan and housing options.</p>' : '<p class="res-sub" style="margin:0 0 18px">Tell us a bit about you, then keep your picks from the quizzes or choose your own.</p>'}
+    <div class="profile-layout">
+      ${aboutCard}
+      ${selectionCards || '<div class="profile-callout"><p>Once you finish this prompt, your profile will personalize the meal and housing options.</p></div>'}
     </div>
-    <p class="hint">Saved in this browser.</p>`;
+    ${!promptOnly ? '<p class="hint" style="margin-top:14px">Saved in this browser.</p>' : ''}`;
+  const titleEl = document.getElementById('profile-title'); if (titleEl) titleEl.textContent = title;
 }
 
 export { navigate, showToast, hideToast, openProfile, closeProfile, home, render };

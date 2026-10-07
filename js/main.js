@@ -27,9 +27,10 @@ document.addEventListener('click', e => {
   if (ui.busy) return;
   let dir = 'next';
   if (t.dataset.start) {
-    if (!profile.year || profile.athlete == null) { openProfile(t); return; }
+    if (!profile.year || profile.athlete == null) { openProfile(t, true); return; }
     if (ui.overlayOpen) closeProfile(false);
     resetQuiz(t.dataset.start);
+    navigate(() => { render(); window.scrollTo({ top: 0 }); }, dir);
     return;
   }
   else if (t.hasAttribute('data-home')) { dir = 'prev'; resetState(); }
@@ -88,4 +89,4 @@ document.addEventListener('keydown', e => {
 
 setProfile(loadProfile());
 home();
-if (!profile.year || profile.athlete == null) openProfile();
+if (!profile.year || profile.athlete == null) openProfile(null, true);

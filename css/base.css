@@ -97,6 +97,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); height: 28px; }
 .facts div { display: grid; grid-template-columns: 9.5rem 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
 .facts dt { color: var(--muted); font-size: 0.9rem; }
 .facts dd { margin: 0; min-width: 0; }
+@media (max-width: 700px) { .profile-layout { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { .facts div { grid-template-columns: 1fr; gap: 2px; } }
 .warn { border-left: 3px solid var(--accent); background: var(--soft); padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 16px 0; font-size: 0.93rem; }
 h4 { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 22px 0 8px; font-weight: 500; }
@@ -107,6 +108,10 @@ ul.notes { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
 .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
 .btn.done { background: transparent; color: var(--ink); border: 1px solid var(--accent); cursor: default; }
 .btn:hover:not(.done) { filter: brightness(1.08); }
+.profile-layout { display: grid; grid-template-columns: minmax(240px, 0.9fr) minmax(300px, 1.4fr); gap: 16px; align-items: start; }
+.profile-columns { display: grid; gap: 14px; }
+.profile-callout { border: 1px solid var(--line); border-radius: 6px; padding: 18px; background: var(--bg); min-width: 0; display: flex; align-items: center; }
+.profile-callout p { margin: 0; color: var(--muted); }
 .pcards { display: grid; gap: 14px; }
 .pcard { border: 1px solid var(--line); border-radius: 6px; padding: 18px; background: var(--bg); min-width: 0; }
 .pcard h3 { font-family: var(--font-display); font-size: 1.6rem; letter-spacing: -0.02em; margin: 2px 0 6px; }
