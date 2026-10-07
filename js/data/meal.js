@@ -18,14 +18,7 @@ const MEAL = {
 const ddWeek = k => MEAL[k].dd / WEEKS;
 const MATCH_TEMP = 10; // lower = the best plan takes a bigger share
 
-const WHO_MEAL = { id: 'who', q: 'Which one describes you?', opts: [
-  { label: 'First-year living on campus', sub: 'You are required to pick Flex 500 or Flex 800.', v: 'first' },
-  { label: 'Roster athlete', sub: 'Training table meals are covered Monday to Friday.', v: 'athlete' },
-  { label: 'Returning or transfer student', sub: 'Flex, Block and Commuter plans are open to you.', v: 'returning' }
-]};
 const DD_SLIDER = { id: 'dd', type: 'slider', q: 'What weekly Dining Dollar budget do you want?', sub: 'Dining Dollars pay at restaurants, cafés and markets with a 5% discount. You can add more Dining Dollars later, so a plan with fewer of them can still work. Dining hall meals come from your plan and cannot be added.', min: 10, max: 150, step: 5, def: 40 };
-const MEAL_BUDGET = { id: 'mb', type: 'budget', q: 'Do you have a budget for your meal plan?', sub: 'An exact or rough amount is fine, per semester and before sales tax. Count your plan plus any Dining Dollars you would add on top. Skip it if you have not set one.', min: 800, max: 3400, step: 50, def: 2500, unit: 'per semester' };
-const FY_QS = [DD_SLIDER, MEAL_BUDGET];
 /* Dining Dollars can be topped up later. Dining hall meals cannot. So a plan's real cost is its price plus the top-up needed to reach the weekly Dining Dollar target. Top-ups are rounded up to the next $5. */
 const ceil5 = x => Math.ceil(x / 5) * 5;
 const topUpFor = (key, d) => (typeof d === 'number') ? Math.max(0, ceil5(d * WEEKS - MEAL[key].dd)) : 0;
@@ -40,17 +33,6 @@ function ddPoints(d) {
   if (c.eff5 < c.eff8) return { p: { f5: 1 }, why: `Reaching ${money(d)} a week (${money(T)} a semester) means topping up ${money(c.t5)} on Flex 500, for ${money(c.eff5)} in total. That is less than Flex 800${c.t8 > 0 ? ' with a ' + money(c.t8) + ' top-up' : ''} at ${money(c.eff8)}.` };
   if (c.eff8 < c.eff5) return { p: { f8: T >= 800 ? 2 : 1 }, why: `Reaching ${money(d)} a week (${money(T)} a semester) costs ${money(c.eff8)} on Flex 800${c.t8 > 0 ? ' with a ' + money(c.t8) + ' top-up' : ''} and ${money(c.eff5)} on Flex 500 with a ${money(c.t5)} top-up, so Flex 800's extra Dining Dollars save money.` };
   return { p: {}, why: '' };
-}
-function budgetPoints(b, d) {
-  if (typeof b !== 'number') return { p: {}, why: '' };
-  const c = fyCosts(d); const e5 = c.eff5, e8 = c.eff8;
-  const fits5 = e5 <= b, fits8 = e8 <= b;
-  if (fits5 && fits8) return { p: {}, why: '' };
-  if (fits5) return { p: { f5: 2 }, why: `Flex 500 fits your ${money(b)} budget at ${money(e5)} with the top-up, and Flex 800 (${money(e8)}) does not.` };
-  if (fits8) return { p: { f8: 2 }, why: `Flex 800 fits your ${money(b)} budget at ${money(e8)}, and Flex 500 with the top-up it needs (${money(e5)}) does not.` };
-  return e5 <= e8
-    ? { p: { f5: 2 }, why: `Both Flex plans are above your ${money(b)} budget once you reach your Dining Dollar target. Flex 500 is closer at ${money(e5)}.` }
-    : { p: { f8: 2 }, why: `Both Flex plans are above your ${money(b)} budget once you reach your Dining Dollar target. Flex 800 is closer at ${money(e8)}.` };
 }
 const ATH_Q = { id: 'ath', q: 'Beyond training table meals, how many dining hall meals do you need per week?', opts: [
   { label: '2 to 3 a week', sub: 'Mostly weekends and the odd extra.', v: 'ath50' },
@@ -73,14 +55,12 @@ const RET_QS = [
     { label: '7 a week', sub: 'About one a day.', m: 7.1 },
     { label: 'Whenever I want', sub: 'Two or more a day, no counting.', m: 14 }
   ]},
-  DD_SLIDER,
-  MEAL_BUDGET
+  DD_SLIDER
 ];
 function rankReturning(picks) {
-  const live = RET_QS[0].opts[picks[1]].v;
-  const m = RET_QS[1].opts[picks[2]].m;
-  const d = picks[3];
-  const b = picks[4];
+  const live = RET_QS[0].opts[picks[0]].v;
+  const m = RET_QS[1].opts[picks[1]].m;
+  const d = picks[2];
   const keys = ['flex500', 'flex800', 'block60', 'block80', 'block100', 'block120'];
   if (live !== 'hall') keys.push('commuter');
   return keys.map(k => {
@@ -90,9 +70,8 @@ function rankReturning(picks) {
     const short = Math.max(0, m - p.cap) * 5;                  // dining hall meals cannot be added later
     const excess = Math.max(0, p.cap - m) * (p.cap >= 14 ? 0.6 : 2);
     const ddExcess = Math.max(0, p.dd / WEEKS - d) * 0.5;      // included Dining Dollars you would not spend
-    const over = (typeof b === 'number' && eff > b) ? 12 + (eff - b) / 25 : 0;
-    return { key: k, topUp, eff, pen: short + excess + ddExcess + (topUp / WEEKS) * 0.03 + eff / 250 + over };
+    return { key: k, topUp, eff, pen: short + excess + ddExcess + (topUp / WEEKS) * 0.03 + eff / 250 };
   }).sort((a, c) => a.pen - c.pen);
 }
 
-export { MEAL, ddWeek, MATCH_TEMP, WHO_MEAL, DD_SLIDER, MEAL_BUDGET, FY_QS, topUpFor, withTop, fyCosts, ddPoints, budgetPoints, ATH_Q, RET_QS, rankReturning };
+export { MEAL, ddWeek, MATCH_TEMP, DD_SLIDER, topUpFor, withTop, fyCosts, ddPoints, ATH_Q, RET_QS, rankReturning };

@@ -1,8 +1,6 @@
 /* Housing communities, villages, 2026-27 projected rates, and the question tree for the housing quiz. */
 import { money } from '../format.js';
 
-const HOUSE_BUDGET = { id: 'hb', type: 'budget', q: 'Do you have a housing budget?', sub: 'An exact or rough amount is fine. NC State bills housing per semester, and the prices here include the $150 ResNet fee. Skip it if you have not set one.', min: 2500, max: 7000, step: 50, def: 4500, unit: 'per semester' };
-
 /* ================= Housing data ================= */
 const V = {
   eng: { name: 'Engineering Village', who: 'First-year students in the College of Engineering or its associated programs.', does: 'Explore engineering pathways and majors through the NAE Grand Challenges, hands-on makerspace learning, and academic and wellness support.', home: 'Wolf Ridge is listed as home to Engineering Village.' },
@@ -209,4 +207,4 @@ function depth(node) {
   return 1 + best;
 }
 
-export { HOUSE_BUDGET, V, H, COST, costOf, range, ROOT_H, N_FY, RETURNING_ROOT, depth };
+export { V, H, COST, costOf, range, ROOT_H, N_FY, RETURNING_ROOT, depth };
