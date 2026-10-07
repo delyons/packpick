@@ -90,9 +90,15 @@ function historyHtml() {
 }
 function homeView() {
   const saved = k => profile[k] ? `<span class="saved">Saved: ${profile[k].name}</span>` : '';
+  const yearText = profile.year ? YEARS.find(([y]) => y === profile.year)?.[1] || 'Year set' : 'Year not set';
+  const athleteText = profile.athlete == null ? 'Athlete status not set' : profile.athlete ? 'Athlete' : 'Not an athlete';
+  const profileStatus = !profile.year || profile.athlete == null
+    ? `<div class="warn" style="margin:0 0 14px"><strong>Profile needed:</strong> choose your year and athlete status before starting a quiz.</div>`
+    : `<div class="saved" style="margin:0 0 14px"><strong>Profile:</strong> ${yearText} · ${athleteText}</div>`;
   $app.innerHTML = `<div class="home">
     <h1>Find your fit on campus.</h1>
     <p class="lede">Short quizzes that match you to a meal plan or a place to live using this year's NC State options. Save your picks to your profile.</p>
+    ${profileStatus}
     <div class="picker">
       ${Object.keys(QUIZZES).map(k => `
         <button class="pick" data-start="${k}">

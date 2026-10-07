@@ -1,15 +1,15 @@
 /* Saving a choice to the profile, from a quiz result or from the profile dropdowns. */
 import { state, profile } from './state.js';
 import { persist } from './persistence.js';
-import { WHO_MEAL, MEAL, withTop } from './data/meal.js';
+import { MEAL, withTop } from './data/meal.js';
 import { H } from './data/housing.js';
 import { ineligible } from './eligibility.js';
 import { render, showToast } from './views.js';
 
 function quizDD() {
   if (state.quiz !== 'meal') return null;
-  const o = WHO_MEAL.opts[state.picks[0]]; if (!o) return null;
-  const v = o.v === 'first' ? state.picks[1] : o.v === 'returning' ? state.picks[3] : null;
+  const who = profile.athlete === true ? 'athlete' : profile.year === 'first' ? 'first' : 'returning';
+  const v = who === 'first' ? state.picks[0] : who === 'returning' ? state.picks[2] : null;
   return typeof v === 'number' ? v : null;
 }
 function saveOutcome(kind, key) {

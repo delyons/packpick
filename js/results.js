@@ -34,11 +34,11 @@ const MEAL_NOTES = [
   'You can add Dining Dollars during the semester through the <a href="https://onecard.ncsu.edu/meal-plan/" target="_blank" rel="noopener">One Card portal</a>. Dining hall meals cannot be added.'
 ];
 function mealResult() {
-  const who = WHO_MEAL.opts[state.picks[0]].v;
+  const who = profile.athlete === true ? 'athlete' : profile.year === 'first' ? 'first' : 'returning';
   const hasB = x => typeof x === 'number';
   const SCHOLAR = ' If you are experiencing food insecurity and cannot afford a meal plan, you may qualify for a <a href="https://go.ncsu.edu/pack-essentials" target="_blank" rel="noopener">meal plan scholarship</a>.';
   if (who === 'athlete') {
-    const key = ATH_Q.opts[state.picks[1]].v; const p = MEAL[key]; const b = state.picks[2];
+    const key = ATH_Q.opts[state.picks[0]].v; const p = MEAL[key]; const b = state.picks[1];
     const over = hasB(b) && p.price > b;
     const cheaper = over ? ['ath50', 'ath80', 'ath120', 'ath150'].filter(k => k !== key && MEAL[k].price <= b).sort((x, y) => MEAL[y].price - MEAL[x].price).slice(0, 2) : [];
     ui.lastSummary = { title: p.name, lines: [`${p.name} · ${money(p.price)} a semester`, p.meals].concat(over ? [`${money(p.price - b)} over your ${money(b)} budget`] : []).concat(cheaper.length ? ['Within your budget: ' + cheaper.map(k => MEAL[k].name).join(', ')] : []) };
@@ -53,9 +53,9 @@ function mealResult() {
       <ul class="notes"><li>Athletic plans are priced for a 17-week semester, before sales tax.</li><li>${MEAL_NOTES[0]}</li><li>${MEAL_NOTES[2]}</li><li>If you are enrolled in fall you are auto-enrolled for spring unless you change or cancel by the deadline.</li></ul>`;
   }
   if (who === 'first') {
-    let s5 = 0, s8 = 0; const w5 = [], w8 = []; const d = state.picks[1]; const b = state.picks[2];
+    let s5 = 0, s8 = 0; const w5 = [], w8 = []; const d = state.picks[0]; const b = state.picks[1];
     FY_QS.forEach((q, i) => {
-      const pick = state.picks[i + 1];
+      const pick = state.picks[i];
       const x = q.type === 'slider' ? ddPoints(pick) : budgetPoints(pick, d);
       s5 += x.p.f5 || 0; s8 += x.p.f8 || 0;
       if ((x.p.f5 || 0) > (x.p.f8 || 0)) w5.push(x.why);
@@ -76,8 +76,8 @@ function mealResult() {
       ${reasons.length ? `<h4>Why</h4><ul class="notes">${reasons.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}
       <h4>Good to know</h4><ul class="notes">${MEAL_NOTES.map(x => `<li>${x}</li>`).join('')}</ul>`;
   }
-  const ranked = rankReturning(state.picks); const d = state.picks[3]; const b = state.picks[4];
-  const live = RET_QS[0].opts[state.picks[1]].v;
+  const ranked = rankReturning(state.picks); const d = state.picks[2]; const b = state.picks[3];
+  const live = RET_QS[0].opts[state.picks[0]].v;
   const top = ranked.slice(0, 3);
   const wts = top.map(t => Math.exp(-(t.pen - top[0].pen) / MATCH_TEMP));
   const tot = wts.reduce((a, c) => a + c, 0);

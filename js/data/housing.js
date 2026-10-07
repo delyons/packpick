@@ -195,6 +195,7 @@ const ROOT_H = { q: 'Where are you in your NC State journey?', opts: [
       n('Not sure yet', 'Answer a few questions to narrow it down.', N_NS1)
     ]})
 ]};
+const RETURNING_ROOT = ROOT_H.opts[1].next;
 const depthMemo = new Map();
 function depth(node) {
   if (depthMemo.has(node)) return depthMemo.get(node);
@@ -208,4 +209,4 @@ function depth(node) {
   return 1 + best;
 }
 
-export { HOUSE_BUDGET, V, H, COST, costOf, range, ROOT_H, depth };
+export { HOUSE_BUDGET, V, H, COST, costOf, range, ROOT_H, N_FY, RETURNING_ROOT, depth };
