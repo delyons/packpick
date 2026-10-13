@@ -39,7 +39,8 @@ $app.addEventListener('input', e => {
 });
 document.addEventListener('click', e => {
   if (e.target.id === 'overlay') { pendingQuiz = null; closeProfile(true); return; }
-  const t = e.target.closest('button'); if (!t) return;
+  const t = e.target.closest('button, a[data-page]'); if (!t) return;
+  if (t.matches('a[data-page]')) e.preventDefault();
   if (t.hasAttribute('data-close')) { pendingQuiz = null; closeProfile(true); return; }
   if (t.hasAttribute('data-setup-continue')) {
     if (!profile.year) { document.getElementById('profile-setup-year').focus(); return; }
@@ -57,6 +58,14 @@ document.addEventListener('click', e => {
   }
   if (t.hasAttribute('data-setup')) { hideToast(); pendingQuiz = null; openProfileSetup(t); return; }
   if (t.hasAttribute('data-profile')) { hideToast(); openProfile(t); return; }
+  if (t.dataset.page) {
+    const page = t.dataset.page;
+    if (page === 'home') resetState();
+    else if (page === 'about') state.view = 'about';
+    else return;
+    navigate(() => { render(); window.scrollTo({ top: 0 }); }, page === 'home' ? 'prev' : 'next');
+    return;
+  }
   if (t.hasAttribute('data-clear-history')) {
     if (!window.confirm('Clear all recent meal and housing quizzes? This cannot be undone.')) return;
     profile.history.meal = [];

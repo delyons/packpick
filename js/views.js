@@ -67,7 +67,12 @@ function closeProfile(restore) {
 }
 function home() { resetState(); render(); }
 function render() {
+  document.querySelectorAll('[data-page]').forEach(button => {
+    if (button.dataset.page === (state.view === 'about' ? 'about' : 'home')) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
+  });
   if (state.view === 'home') homeView();
+  else if (state.view === 'about') aboutView();
   else {
     const f = getFlow();
     if (f.done && state.step >= f.qs.length) resultView(f); else questionView(f);
@@ -110,7 +115,7 @@ function homeView() {
     ? `<div class="warn profile-needed"><span><strong>Profile needed:</strong> choose your year and athlete status before starting a quiz.</span><button class="btn small" data-setup>Set up profile</button></div>`
     : `<div class="saved" style="margin:0 0 14px"><strong>Profile:</strong> ${yearText} · ${athleteText}</div>`;
   $app.innerHTML = `<div class="home">
-    <h1>Find your fit on campus.</h1>
+    <h1>Pick your future on campus.</h1>
     <p class="lede">Short quizzes that match you to a meal plan or a place to live using this year's NC State options. Save your picks to your profile.</p>
     ${profileStatus}
     <div class="picker">
@@ -123,6 +128,53 @@ function homeView() {
         </button>`).join('')}
     </div>
     ${historyHtml()}
+  </div>`;
+}
+function aboutView() {
+  $app.innerHTML = `<div class="about-page" aria-labelledby="about-title">
+    <p class="eyebrow about-kicker">About</p>
+    <h1 id="about-title">What is PackPick?</h1>
+    <p class="about-intro">PackPick is an unofficial guide to exploring NC State meal plans and housing. Answer a few questions to get options tailored to your situation, then keep the picks that work for you.</p>
+    <div class="about-features">
+      <article class="about-feature">
+        <span class="about-number" aria-hidden="true">01</span>
+        <div><h2>Personalized quizzes</h2>
+          <p>Find a meal plan based on your student and athlete status, eating habits, and weekly Dining Dollar budget. Explore housing with questions that adapt to your year and preferences.</p></div>
+      </article>
+      <article class="about-feature">
+        <span class="about-number" aria-hidden="true">02</span>
+        <div><h2>Compare Options</h2>
+          <p>Explore meal plans, residence halls, apartments, and living-learning villages. Meal plan results include semester pricing and Dining Dollar details, so you can see how a weekly budget may affect the total.</p></div>
+      </article>
+      <article class="about-feature">
+        <span class="about-number" aria-hidden="true">03</span>
+        <div><h2>Save your Preferences</h2>
+          <p>Set your year and roster athlete status to focus recommendations on options available to you. Save quiz results, choose a meal plan or housing option yourself, and update your picks later from Your Profile.</p>
+          <p>Review recent quiz answers and results, reopen a result, or retake a quiz. Your profile and quiz history are saved in this browser, and you can clear recent quizzes whenever you like.</p></div>
+      </article>
+    </div>
+    <section class="about-me" aria-labelledby="about-me-title">
+      <figure class="about-me-photo">
+        <img src="images/about-me.png" alt="Photo of David Lyons, creator of PackPick" width="200" height="200">
+      </figure>
+      <div class="about-me-copy">
+        <p class="eyebrow">The Creator of PackPick</p>
+        <h2 id="about-me-title">About Me</h2>
+        <p><strong>Hi, I'm David Lyons.</strong> I'm a first-year computer science student at NC State.</p>
+        <p>I created PackPick because I felt like I had a hard time deciding between the many different meal plans and housing options that are offered at NC State. I didn't want my dining dollars or meal swipes to go to waste, and I liked the idea of taking a short quiz to determine the best options based on your preferences.</p>
+        <p>This is my first official project! It's small, still in development, but I hope it helps you <strong>pick</strong> your future at NC State!</p>
+        <div class="about-me-links" aria-label="Social profiles">
+          <a href="https://www.linkedin.com/in/lyonsdavide/" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14ZM8.34 17.5v-7.2H5.95v7.2h2.39ZM7.15 9.32a1.38 1.38 0 1 0-.02-2.76 1.38 1.38 0 0 0 .02 2.76Zm10.35 8.18v-3.94c0-2.11-1.13-3.09-2.64-3.09a2.28 2.28 0 0 0-2.06 1.13v-.97h-2.4c.03.68 0 6.87 0 6.87h2.4v-3.84c0-.2.01-.41.07-.56.17-.41.54-.84 1.17-.84.83 0 1.16.63 1.16 1.55v3.69h2.39Z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://github.com/delyons" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.68-3.76-1.32-3.76-1.32-.51-1.29-1.24-1.63-1.24-1.63-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1 1.72 2.62 1.22 3.26.93.1-.72.39-1.22.71-1.5-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.21 1.16-2.99-.12-.28-.5-1.42.11-2.95 0 0 .95-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.12-1.44 3.06-1.14 3.06-1.14.61 1.53.23 2.67.11 2.95.72.78 1.16 1.77 1.16 2.99 0 4.29-2.62 5.24-5.12 5.51.4.35.76 1.03.76 2.08v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </section>
   </div>`;
 }
 function questionView(f) {
